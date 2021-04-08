@@ -27,11 +27,16 @@
         "value": "",
         "required": true
       },
-      "TELEGRAPH_TOKEN": {
-        "description": "Open this link to generate telegraph token ==> https://telegraph-token.sonywegas.repl.run",
+      "AUTHORIZED_CHATS": {
+        "description": "Fill User ID and Chat ID of you want to authorize and adding for more than one use space",
         "value": "",
-        "required": true
+        "required": false
       }
-
+    },
+    "formation": {
+      "worker": {
+        "quantity": 1,
+        "size": "free"
+      }
     }
 }

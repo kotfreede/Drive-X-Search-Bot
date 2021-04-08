@@ -1,6 +1,9 @@
 import logging
 import os
 import time
+import random
+import string
+from dotenv import load_dotenv
 
 import telegram.ext as tg
 
@@ -15,6 +18,7 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
                     handlers=[logging.FileHandler('log.txt'), logging.StreamHandler()],
                     level=logging.INFO)
 
+load_dotenv('config.env')
 
 def getConfig(name: str):
     return os.environ[name]
@@ -33,12 +37,28 @@ if os.path.exists('authorized_chats.txt'):
             AUTHORIZED_CHATS.add(int(line.split()[0]))
 
 try:
+    achats = getConfig('AUTHORIZED_CHATS')
+    achats = achats.split(" ")
+    for chats in achats:
+        AUTHORIZED_CHATS.add(int(chats))
+except:
+    pass
+
+try:
     BOT_TOKEN = getConfig('BOT_TOKEN')
     OWNER_ID = int(getConfig('OWNER_ID'))
-    telegraph_token = getConfig('TELEGRAPH_TOKEN')
 except KeyError as e:
     LOGGER.error("One or more env variables missing! Exiting now")
     exit(1)
+
+#Generate Telegraph Token
+sname = ''.join(random.SystemRandom().choices(string.ascii_letters, k=8))
+LOGGER.info("Generating Telegraph Token using '" + sname + "' name")
+telegraph = Telegraph()
+telegraph.create_account(short_name=sname)
+telegraph_token = telegraph.get_access_token()
+LOGGER.info("Telegraph Token Generated: '" + telegraph_token + "'")
+
 
 DRIVE_NAME = []
 DRIVE_ID = []
@@ -59,7 +79,7 @@ if os.path.exists('drive_folder'):
 if DRIVE_ID :
     pass
 else :
-    LOGGER.error("The README.md file there to be read! Exiting now!")
+    LOGGER.error("Please run python3 driveid.py - Exiting now!")
     exit(1)
 
 telegra_ph = Telegraph(access_token=telegraph_token)
